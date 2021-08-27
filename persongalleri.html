@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>persongalleri</title>
+    <style>
+      section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 4px;
+        width: 100vw;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      article {
+        border: 1px solid #333;
+        padding: 10px;
+        margin: 1em;
+      }
+
+      img {
+        max-width: 100px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section></section>
+
+    <template>
+      <article>
+        <h2></h2>
+        <img src="" alt="" />
+        <p class="fornavn"></p>
+        <p class="efternavn"></p>
+        <p class="fødselsdag"></p>
+        <p class="hobby"></p>
+        <p class="titel"></p>
+        <p class="troende"></p>
+        <p class="email"></p>
+      </article>
+    </template>
+
+    <script>
+      let personer;
+      let container;
+      let temp;
+
+      const url = "https://persongalleri-5d3e.restdb.io/rest/persongalleri";
+
+      const options = {
+        headers: {
+          "x-apikey": "600fe9211346a1524ff12e31",
+        },
+      };
+
+      document.addEventListener("DOMContentLoaded", start);
+
+      function start() {
+        container = document.querySelector("section");
+        temp = document.querySelector("template");
+        hentdata();
+      }
+
+      async function hentdata() {
+        const response = await fetch(url, options);
+        personer = await response.json();
+        console.log(personer);
+        visPersoner();
+      }
+
+      function visPersoner() {
+        //løb igennem array "Personer"
+        personer.forEach((etPersoner) => {
+          const klon = temp.cloneNode(true).content;
+          klon.querySelector("h2").textContent = etPersoner.fornavn;
+          klon.querySelector(".efternavn").textContent =
+            "Efternavn: " + etPersoner.efternavn;
+          klon.querySelector(".fødselsdag").textContent =
+            "Fødselsdag: " + etPersoner.fødselsdag;
+          klon.querySelector(".hobby").textContent =
+            "Hobby: " + etPersoner.hobby;
+          klon.querySelector(".titel").textContent =
+            "Titel: " + etPersoner.titel;
+          klon.querySelector(".troende").textContent =
+            "Troende: " + etPersoner.troende;
+          klon.querySelector(".email").textContent =
+            "Email: " + etPersoner.email;
+          klon.querySelector("img").src = "faces/" + etPersoner.billede;
+          container.appendChild(klon);
+        });
+      }
+
+      hentdata();
+    </script>
+  </body>
+</html>
